@@ -10,7 +10,7 @@ function [res,maxres,r]=residuum(TRI,x,y,xd,yd,zd,c,v1,v2,v3,e1,e2,e3)
 % v1,v2,v3 - Liste der Eckenindizes der Dreiecke
 % e1,e2,e3 - Liste der Kantenindizes der Dreiecke
 
-addpath('splinepak');
+%addpath('splinepak');
 
 %erzeuge Triangulierung
 T=triangulation(TRI,[x,y]);

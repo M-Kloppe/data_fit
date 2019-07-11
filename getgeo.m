@@ -100,6 +100,8 @@ fileID = fopen('example.geo','w');
 %use OpenCascade kernel -> gmsh crashes sometimes ??!!
 fprintf(fileID,'SetFactory("OpenCASCADE");\n');
 
+%poi(:, 4) = 0.1*poi(:, 4);
+
 %list of points
 for i=1:size(poi,1)
 fprintf(fileID,'Point(%d)={%d,%d,%d};\n',poi(i,:));

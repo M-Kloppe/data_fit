@@ -15,7 +15,7 @@
 
 
 clear all;
-addpath('splinepak');
+%addpath('splinepak');
 
 %Wähle ein Datenset zum Einlesen der zu verwendeten Daten
 %set = 1 -> Stromboli-Daten
