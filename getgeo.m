@@ -95,7 +95,7 @@ end
 
 
 % GMsh geometry file is stored as .txt file
-fileID = fopen('geotest.txt','w');
+fileID = fopen('example.geo','w');
 
 %use OpenCascade kernel -> gmsh crashes sometimes ??!!
 fprintf(fileID,'SetFactory("OpenCASCADE");\n');
@@ -129,8 +129,8 @@ end
 %fprintf(fileID,'Save "geotest.brep";');
 
 fclose(fileID);
-type geotest.txt
-uiopen('C:\Users\max-k\Desktop\Bachelorarbeit\splinepak\Computerpraktikum\geotest.txt',1)
+%type geotest.txt
+%uiopen('C:\Users\max-k\Desktop\Bachelorarbeit\splinepak\Computerpraktikum\geotest.txt',1)
 
 end
 
