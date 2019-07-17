@@ -108,6 +108,7 @@ fprintf(fileID,'\n');
 %poi(:, 4) = 0.1*poi(:, 4);
 
 %list of points
+%poi(:, 4) = 0;
 for i=1:size(poi,1)
 fprintf(fileID,'Point(%d)={%d,%d,%d};\n',poi(i,:));
 %fprintf(fileID,'\n');
@@ -141,6 +142,7 @@ fprintf(fileID,'Compound Surface{Surface{:}};\n');
 fprintf(fileID,'\n');
 fprintf(fileID,'//Mesh.CharacteristicLengthMin = 50;\n');
 fprintf(fileID,'//Mesh.CharacteristicLengthMax = 50;\n');
+fprintf(fileID,'//Mesh.CharacteristicLengthFromCurvature = 1;\n');
 fprintf(fileID,'\n');
 fprintf(fileID,'Mesh 2;\n');
 fprintf(fileID,'Save ''example.vtk'';\n');

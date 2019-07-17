@@ -20,7 +20,7 @@ clear all;
 %Wähle ein Datenset zum Einlesen der zu verwendeten Daten
 %set = 1 -> Stromboli-Daten
 %set = 2 -> Schwarzwald-Daten
-set=1;
+set=2;
 
 %Einlesen der Geodaten und TRansformation in die richtige Form
 %xd,yd,zd - Koordinaten der Geodaten als Spaltenvektoren
@@ -48,7 +48,7 @@ y2=max(yd)+epsilon*10^k;
 % w=1 grobe Triangulierung (48 Dreiecke)
 % w=2 Triangulierung (130 Dreiecke)
 % w=3 feine Triangulierung (330 Dreiecke)
-w=3;
+w=2;
 
 if w==1
 %Triangulierung (mit PDE Toolbox erstellt, 48 Dreiecke) einlesen
