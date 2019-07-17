@@ -97,8 +97,13 @@ end
 % GMsh geometry file is stored as .txt file
 fileID = fopen('example.geo','w');
 
-%use OpenCascade kernel -> gmsh crashes sometimes ??!!
-fprintf(fileID,'SetFactory("OpenCASCADE");\n');
+fprintf(fileID,'// OpenCASCADE suffers with some bugs:\n');
+fprintf(fileID,'// https://gitlab.onelab.info/gmsh/gmsh/issues/594\n');
+fprintf(fileID,'// https://github.com/tpaviot/oce/issues/716\n');
+fprintf(fileID,'//SetFactory("OpenCASCADE");\n');
+fprintf(fileID,'\n');
+fprintf(fileID,'SetFactory("Built-in");\n');
+fprintf(fileID,'\n');
 
 %poi(:, 4) = 0.1*poi(:, 4);
 
@@ -130,9 +135,18 @@ end
 %save e.g. brep-File
 %fprintf(fileID,'Save "geotest.brep";');
 
+fprintf(fileID,'\n');
+fprintf(fileID,'Physical Surface("terrain") = {Surface{:}};\n');
+fprintf(fileID,'Compound Surface{Surface{:}};\n');
+fprintf(fileID,'\n');
+fprintf(fileID,'//Mesh.CharacteristicLengthMin = 50;\n');
+fprintf(fileID,'//Mesh.CharacteristicLengthMax = 50;\n');
+fprintf(fileID,'\n');
+fprintf(fileID,'Mesh 2;\n');
+fprintf(fileID,'Save ''example.vtk'';\n');
+
 fclose(fileID);
 %type geotest.txt
 %uiopen('C:\Users\max-k\Desktop\Bachelorarbeit\splinepak\Computerpraktikum\geotest.txt',1)
 
 end
-
