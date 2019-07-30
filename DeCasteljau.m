@@ -1,5 +1,10 @@
-%De Casteljau für d=2
+%De Casteljau algorithm for d=2
 
+%M. Kloppe, Juni 2019
+
+%Paramter:
+%b1,b2,b3 - barycentric coordinates (columns)
+% c - row vector of B-coefficients of a given polynomial
 function [value]=DeCasteljau(b1,b2,b3,c)
 
 B=[b1,b2,b3];

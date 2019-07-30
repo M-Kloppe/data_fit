@@ -1,41 +1,41 @@
-%Funktion ermittelt Stern k-ter Ordnung eines (bzw. mehrerer) Eckpunktes
+%function determines k_th order star of one or more vertices
 
 %M. Kloppe, Juni 2019
 
 %Paramter:
-%vlist - Kartesische Koord. der Eckpunkte
-%k - Ordnung des Sterns
-%indv - Indizes der betrachteten Eckpunkte
-%tri - ConnectivityList der betrachteten Triangulierung
+%vlist - cartesian coordinates of the vertices
+%k - order of star
+%indv - Indizes of vertices
+%tri - ConnectivityList of triangulation
 
-%Rückgabewerte:
-%vstar - Koordinaten der Eckpunkte in star
-%indstar - zugehörige Indizes
-%tristar - Dreiecke in star
-%indtri - indizes der Dreiecke in betrachteter Triangulierung
+%return values:
+%vstar - coordinates of vertices in star
+%indstar - Indizes of these vertices
+%tristar - triangles in star
+%indtri - indizes of these triangles (regarding used triangulation)
 function [vstar,indstar,tristar,indtri]=starvk(vlist,k,indv,tri)
-%ermittle Stern rekursiv
+%determine star recursively
     if k==1
         vstar=[];
         indstar=[];
         tristar=[];
         indtri=[];
         for j=1:length(indv)
-            %ermittle für jeden Eckpunkte alle Dreiecke mit diesem Eckpunkt
+            %determine for each vertex all triangles containing this vertex
             m1=find(tri(:,1)==indv(j));
             m2=find(tri(:,2)==indv(j));
             m3=find(tri(:,3)==indv(j));
         
-            %Streiche mehrfache Dreiecke -> das sind alle Dreiecke im Stern
+            %just use every triangle once -> all triangles in first order
+            %star
             indhelp=unique([m1;m2;m3]);
             indhelptri=indhelp;
             indhelp=tri(indhelp,:);
-            %streiche auch mehrfache Ecken -> das sind alle Eckpkte im
-            %Stern
+            %just use every vertex once -> all vertices in star
             indhelp2=indhelp;
             indhelp=unique(indhelp);
         
-            %Ergänze Liste aller Eckpunkte und Dreiecke (+zugeh. Indizes)
+            %update lists of vertices and triangles(+ Indizes)
             vstar=[vstar;vlist(indhelp,:)];
             indstar=[indstar;indhelp];
             tristar=[tristar;indhelp2];
@@ -45,21 +45,21 @@ function [vstar,indstar,tristar,indtri]=starvk(vlist,k,indv,tri)
         indstar=[];
         tristar=[];
         indtri=[];
-        %für Stern höherer Ordnung erzeuge Stern der Randknoten des Sterns
-        %niedrigerer Ordnung
+        %higher order star -> build star of the boundary nodes of the star
+        % order one less
         for i=1:k
             [vstarhelp,indstarhelp,tristarhelp,indhelptri]=starvk(vlist,1,indv,tri);
             
-            %ermittle neue Randknoten des Sterns
+            %determine boundary nodes
             bound=boundary(vstarhelp(:,1),vstarhelp(:,2),0);
             indv=indstarhelp(bound);
             
-            %ergänze Listen
+            %update Lists
             indstar=[indstar;indstarhelp];
             tristar=[tristar;tristarhelp];
             indtri=[indtri;indhelptri];
         end
-        %streiche doppelte Knoten bzw. Dreiecke
+        %just use vertices and triangles once
         indstar=unique(indstar);
         vstar=vlist(indstar,:);
         tristar=unique(tristar,'rows');

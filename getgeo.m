@@ -95,23 +95,18 @@ end
 
 
 % GMsh geometry file is stored as .txt file
-fileID = fopen('example.geo','w');
+fileID = fopen('geo.txt','w');
 
-fprintf(fileID,'// OpenCASCADE suffers with some bugs:\n');
-fprintf(fileID,'// https://gitlab.onelab.info/gmsh/gmsh/issues/594\n');
-fprintf(fileID,'// https://github.com/tpaviot/oce/issues/716\n');
-fprintf(fileID,'//SetFactory("OpenCASCADE");\n');
-fprintf(fileID,'\n');
-fprintf(fileID,'SetFactory("Built-in");\n');
-fprintf(fileID,'\n');
+%use OpenCascade kernel -> gmsh crashes sometimes ??!!
+%fprintf(fileID,'SetFactory("OpenCASCADE");\n');
 
-%poi(:, 4) = 0.1*poi(:, 4);
-
-%list of points
-%poi(:, 4) = 0;
+%list of points (points on spline and points for bezier curve)
 for i=1:size(poi,1)
 fprintf(fileID,'Point(%d)={%d,%d,%d};\n',poi(i,:));
 %fprintf(fileID,'\n');
+
+%poi(:, 4) = 0.1*poi(:, 4);
+
 end
 
 %list of splines
@@ -134,21 +129,11 @@ for i=1:nt
 end
 
 %save e.g. brep-File
-%fprintf(fileID,'Save "geotest.brep";');
-
-fprintf(fileID,'\n');
-fprintf(fileID,'Physical Surface("terrain") = {Surface{:}};\n');
-fprintf(fileID,'Compound Surface{Surface{:}};\n');
-fprintf(fileID,'\n');
-fprintf(fileID,'Mesh.CharacteristicLengthMin = 150;\n');
-fprintf(fileID,'Mesh.CharacteristicLengthMax = 150;\n');
-fprintf(fileID,'//Mesh.CharacteristicLengthFromCurvature = 1;\n');
-fprintf(fileID,'\n');
-fprintf(fileID,'Mesh 2;\n');
-fprintf(fileID,'Save ''example.vtk'';\n');
+%fprintf(fileID,'Save "geo.brep";');
 
 fclose(fileID);
-%type geotest.txt
-%uiopen('C:\Users\max-k\Desktop\Bachelorarbeit\splinepak\Computerpraktikum\geotest.txt',1)
+%%type mwe.txt
+%%uiopen('C:\Users\max-k\Desktop\Bachelorarbeit\splinepak\Computerpraktikum\mwe_crash.txt',1)
 
 end
+

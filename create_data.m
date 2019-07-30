@@ -1,23 +1,22 @@
-%Funktion wandelt gegebenen Höhendaten (Matrix B - Stromboli) in passendes
-%Format um, d.h. Fkt. erzeugt Vektoren xd,yd,zd, die kartesische 
-%Koordinaten der Datenpunkte enthalten
+%function changes the shape of a given matrix of data (Matrix B - Stromboli)
+%-> determines vectors xd,yd,zd with the cartesian coords of the data points 
 
 %M. Kloppe, Juni 2019
 function [xd,yd,zd,nd]=create_data(B)
-%Dimension der Matrix B
+%Dimension of matrix B
 [z,s]=size(B);
 
-%Hilfsvektoren zur Erzeugung von xd und yd
+%in matrix B -> points are something like pixels in xy-plane
+% create xd and yd using linspace
 xhelp=linspace(1,s,s);
 yhelp=linspace(1,z,z);
 
-%hier entsprechen xd und yd "Pixeln" in der xy-Ebene
-%Erzeuge uniformes Gitter und Ordne die Elemente als Vektoren an
+%build uniform grid and reshape elements to get vectors
 [X,Y]=meshgrid(xhelp,yhelp);
 xd=reshape(X,[length(xhelp)*length(yhelp),1]);
 yd=reshape(Y,[length(xhelp)*length(yhelp),1]);
 
-%Erzeuge Vektor der Höhendaten
+%build vector of the geographical heights
 zd=reshape(B,[length(xhelp)*length(yhelp),1]);
 zd=double(zd);
 nd=length(zd);

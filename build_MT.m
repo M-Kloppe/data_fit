@@ -1,34 +1,32 @@
-%Funktion berechnet Matrix MT für Assemblierungsalgorithmus der
-%Energiematrix M
+%function computes matrix MT for assembling algorithm of energy matrix M
 
 %M. Kloppe, Juni 2019
 
-%x,y sind Spaltenvektoren mit den Eckpunkten des aktuellen Dreiecks
+%x,y column vectors with vertices of current triangle
 function [MT]=build_MT(x,y)
-%Speicherreservierung
+%Initialise
 MT=zeros(6,6);
     
-%Berechne Fläche des Dreiecks
+%compute surface of triangle
 area=polyarea(x,y);
 
-%Berechne Transformationsmatrix T des Einheitsdreiecks
+%comute transformationmatrix T of unit triangle
  T=[([x(2),y(2)]-[x(1),y(1)])',([x(3),y(3)]-[x(1),y(1)])'];
  
-%Determinante zu T
+%Determinant of T
  d=det(T);
 
         
-%Partielle Abl. der Koordianten xi(x,y), eta(x,y) des Referenzdreiecks
+%partiell derivative of coordinats xi(x,y), eta(x,y) of reference triangle
  xi_x=T(2,2)/d;
  xi_y=-T(1,2)/d;
  eta_x=-T(2,1)/d;
  eta_y=T(1,1)/d;
         
-%Zweite partielle Ableitungen der Bernsteinpolynome (d=2) auf
-%aktuellem Dreieck als Vektoren
-%Bxx ist ein Vektor, der die sechs Ableitungen DxxBi in lexikographischer 
-%Reihenfolge enthält
-%Analog Bxy, Byy
+%second partiell derivative of Bernsteinpolynomials (d=2) on current
+%triangle (as vectors)
+%Bxx is a vector with all the six  derivatives DxxBi in lexikographical order
+%analogue Bxy, Byy
 Bxx=[2*xi_x^2;...
     4*xi_x*eta_x;...
     -4*xi_x^2-4*xi_x*eta_x;...

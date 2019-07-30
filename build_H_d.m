@@ -1,71 +1,70 @@
-%Funktion zur Berechnung der Matrix H = G + \mu * M
-%Funktion erstellt die Grammatrix G, die Energiematrix M sowie die rechte
-%Seite d, die für die Berechnung des (gegl.) LSQ-Splines benötigt werden
+%function computes matrix H = G + \mu * M
+%therefor get Grammatrix G, Energymatrix M and right-hand-side vector d
+%for solving the LSQ-Splines-equation
 
 %M. Kloppe, Juni 2019
 
 % Parameter
-% A - Transforationsmatrix
-% x,y - Kartesische Koordinaten der Eckpunkte
-% v1,v2,v3 - Liste der Eckenindizes der Dreiecke
-% e1,e2,e3 - Liste der Kantenindizes der Dreiecke
-%xd,yd,zd  - Datenpunkte
-%wd - Gewichte
-%nv - Anzahl der Eckpunkte
+% A - Transforationmatrix
+% x,y - Cartesian koordinates of the vertices
+% v1,v2,v3 - list of indizes of vertices (each triangle)
+% e1,e2,e3 - list of indizes of edges (each triangle)
+%xd,yd,zd  - data points
+%wd - weights
+%nv - number of vertices
 
 function [G,d,M,H]=build_H_d(A,x,y,v1,v2,v3,e1,e2,e3,xd,yd,zd,wd,mu)
-%Wir wollen den Algorithmus 7.3 aus Schumaker - Computational Methods
-%verwenden
+%we are using algorithm 7.3 from Schumaker - Computational Methods
 
-%Dimension von G = Spaltenanzahl der Trafomatrix A = Dimension des
-%Splineraums
+%Dimension of G = number of columnsof Trafomatrix A = Dimension of
+%Splinespace
 N=size(A,2);
 
 
-%Initialisierung von G, M und d
+%Initialise of G, M and d
 G=zeros(N,N);
 M=zeros(N,N);
 d=zeros(N,1);
 
 
-%Aktuelle Triangulierung
+%current triangulation
 Tlist=[v1,v2,v3];
 P=[x,y];
 TRI=triangulation(Tlist,P);
 
 
-%Anzahl der Dreiecke
+%number of triangles
 nt=length(v1);
 
-%Anzahl aller Eckpunkte
+%number of vertices
 nv=length(x);
 
-%Ordne alle Punkte den Dreiecken zu
+%find for each point the triangle
 ti=pointLocation(TRI,xd,yd);
 
 
-%Assemblierung von G, M und r (Schleife über alle Dreiecke)
+%Assembly of G, M and d (loop over all triangles)
 for i=1:nt
-    %Ermittle alle Punkte, die sich in betrachtetem Dreieck befinden
+    %determine all points in current triangle
     ai=find(ti==i);
 
     if isempty(ai)==0
-    %Erstelle die Matrix G(T), sowie r(T)
+    %build G(T) and r(T)
     [GT,dT]=build_GT(TRI,i,wd(ai),xd(ai),yd(ai),zd(ai));
 
-    %Ermittle aktuelle Knotenindizes
+    %determine current indizes of the nodes
     [index]=finde_ind(i,nv,v1,v2,v3,e1,e2,e3);
 
-    %Wähle Untermatrix A(T) aus A aus (Zeilen zu index)
+    %Choose submatrix A(T) of A (rows -> index)
     AT=A(index,:);
 
-    %Aktualisiere G
+    %Update G
     G=G+AT'*GT*AT;
 
-    %Aktualisiere r
+    %Update d
     d=d+AT'*dT;
     
-    %Ermittle MT und aktualisiere M
+    %determine MT and update M
     if mu>0
         vx=[x(v1(i)),x(v2(i)),x(v3(i))]';
         vy=[y(v1(i)),y(v2(i)),y(v3(i))]';

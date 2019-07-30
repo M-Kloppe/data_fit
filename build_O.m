@@ -1,56 +1,56 @@
-%Funktion zur Ermittlung der Beobachtungsmatrix O des
-%Kleinste-Quadrate-Problems
+%function determines observationmatrix O of LSQ-Problem
 
 %M. Kloppe, Juni 2019
 
 %Parameter:
-%dof - Vektor der Freiheitsgrade des Splines
-%A - Transformationsmatrix
-%x,y - kartesische Koord. der Eckpunkte der verfeinerten Triangulierung
-%v1,v2,v3, e1,e2,e3 - Vektoren der Ecken- und Kantenindizes jedes Dreiecks
-%xo,yo - kartesische Koord. der Eckpunkte der urspr. Triangulierung
-%TRIolist - Connectivity List der Eckpunkte der urspr. Triangulierung
-%xd,yd - Vektoren der Daten
-%ie1o,ie2o - Vektoren mit den Anfangs- bzw. Endknoten jeder Kante
+%dof - Vector of dofs
+%A - transformationmatrix
+%x,y - cart. Koord. of vertices of refined triangulation
+%v1,v2,v3, e1,e2,e3 - Vectors of indizes of vertices and edges (each
+%triangle)
+%xo,yo - cart. Koord. of vertices of TRIo
+%TRIolist - Connectivity List of TRIo
+%xd,yd - vector of data
+%ie1o,ie2o - Vector of start and end node (each edge)
 function [O]=build_O(dof,A,x,y,v1,v2,v3,e1,e2,e3,xo,yo,TRIolist,xd,yd,ie1o,ie2o)
-%Trafomatrix enthält in den Spalten die B-Koeffis zu den M-Basis-Splines 
+%Trafomatrix contains in each column B-coeffis of M-Basis-Splines 
 A=full(A);
 
-%Dimension des Spline-Raums
+%Dimension of Spline-Space
 dim=length(dof);
 
-%Initialisierung von O
+%Initialise of O
 O=zeros(length(xd),dim);
 
-%urspruengliche Triangulierung
+%TRIo
 TRIo=triangulation(TRIolist,[xo,yo]);
 
-%Anzahl der Eckpunkte (urspruengliche Triangulierung)
+%number of vertices (TRIo)
 nvo=length(xo);
 
-%Anzahl der Dreiecke (urspruengliche Triangulierung)
+%number of triangles (TRIo)
 nto=size(TRIolist,1);
 
-%Anzahl der Kanten (urspruengliche Triangulierung)
+%number of edges (edges)
 neo=length(ie1o);
 
-%Ordne alle Punkte den Dreiecken zu
+%find for all data points the triangle in TRIo
 tio=pointLocation(TRIo,xd,yd);
 
-%betrachtete Triangulierung (verfeinert)
+%refined triangulation TRI
 TRIlist=[v1,v2,v3];
 TRI=triangulation(TRIlist,[x,y]);
 %triplot(TRI);
 
-%Anzahl Eckpunkte (neue Triangulierung)
+%number of vertices (TRI)
 nv=length(x);
 
-%Ordne alle Punkte den Dreiecken zu
+%find for all data points the triangle in TRI
 ti=pointLocation(TRI,xd,yd);
 
 for i=1:dim
     indv=dof(i);
-    %ermittle aktuellen Eckpunkt für star
+    %determine current vertex for star
     if i>nvo
         if mod(dof(i),2)==1
             inde=1/2*(dof(i)-nvo-nto-neo); 
@@ -62,28 +62,28 @@ for i=1:dim
         
     end
 
-    %Basis-Spline hat support auf star(v) (bzgl. urspr. Triangulierung)
+    %Basis-Spline has support on star(v) (TRIo)
     [~,~,~,indtrio]=starvk([xo,yo],1,indv,TRIolist);
     
-    %Datenpunkte in diesen Dreiecken
+    %Data points in this triangle
     indpoio=ismember(tio,indtrio);
 
-    %Verfeinerungsdreiecke mit diesen Daten
+    %refinement triangles with these data points
     indT=unique(ti(indpoio));
     
     for j=1:length(indT)
-           %Punkte in aktuellem Dreieck
+           %points in current triangle
            indpoi=find(ti==indT(j));
            poi=[xd(indpoi),yd(indpoi)];
            
-           %baryzentrische Koordinaten dieser Punkte
+           %barycentric coordinates of these points
            B = cartesianToBarycentric(TRI,indT(j)*ones(length(indpoi),1),poi);
            
-           %B-Koeffis des Basis-Splines
+           %B-Coeffis of Basis-Splines
            index=finde_ind(indT(j),nv,v1,v2,v3,e1,e2,e3);
            cakt=A(index,i);           
            
-           %ergänze O
+           %update O
            O(indpoi,i)=DeCasteljau(B(:,1),B(:,2),B(:,3),cakt');
     end     
 end
